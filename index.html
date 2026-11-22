@@ -1,0 +1,84 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#f6f1e4">
+  <title>Snack Safari — Feed the friendliest wilds</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&family=Fredoka:wght@500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <main class="game-shell">
+    <header class="topbar">
+      <a class="brand" href="#" aria-label="Snack Safari home">
+        <span class="brand-mark" aria-hidden="true">✿</span>
+        <span>snack<span class="brand-bold">safari</span><small>WILD FRIENDS CLUB</small></span>
+      </a>
+      <div class="top-stats">
+        <div class="stat-pill coins"><span class="stat-icon">✦</span><span id="coin-count">120</span><small>COINS</small></div>
+        <div class="stat-pill level"><span class="stat-icon">✿</span><span id="level-count">01</span><small>RANK</small></div>
+      </div>
+      <button class="sound-button" id="sound-toggle" type="button" aria-label="Toggle sound">♫ <span>Sound on</span></button>
+    </header>
+
+    <section class="game-layout" aria-label="Snack Safari game">
+      <section class="play-area">
+        <div class="scene-heading">
+          <div class="location-tag"><span class="location-dot"></span> SUNNY MEADOW <span class="tag-divider">/</span> ZONE 01</div>
+          <h1>Snack time,<br><em>adventurer!</em></h1>
+          <p>Make a little friend’s day.</p>
+        </div>
+        <div class="day-card"><span class="sun-icon">☀</span><span>DAY 1</span><small>GOLDEN HOUR</small></div>
+        <canvas id="game-canvas" aria-label="Sunny Meadow game scene. Aim at an animal and release to toss food."></canvas>
+        <div class="scene-tip" id="scene-tip"><span>✦</span><span>Choose a snack, then toss it to the friend who wants it!</span></div>
+        <div class="floating-feedback" id="feedback" aria-live="polite"></div>
+        <div class="combo-badge" id="combo-badge">✦ <span id="combo-count">2</span> STREAK</div>
+        <div class="aim-hint" id="aim-hint"><span class="aim-dot"></span> TAP A FRIEND TO TOSS</div>
+        <div class="canvas-vignette" aria-hidden="true"></div>
+      </section>
+
+      <aside class="side-panel">
+        <div class="panel-kicker">YOUR FIELD NOTES <span>✦</span></div>
+        <h2>Who's hungry?</h2>
+        <p class="panel-copy">Listen for their favorite snack.</p>
+        <div class="request-list" id="request-list"></div>
+        <div class="field-progress">
+          <div class="progress-label"><span>MEADOW MISSION</span><span id="mission-count">0 / 5</span></div>
+          <div class="progress-track"><span id="mission-progress"></span></div>
+          <p>Make 5 happy deliveries to earn a <b>bonus!</b></p>
+        </div>
+        <div class="journal-card">
+          <span class="journal-icon">📖</span>
+          <span><b>Field journal</b><small id="journal-copy">Meet all 3 meadow friends!</small></span>
+          <span class="journal-arrow">›</span>
+        </div>
+      </aside>
+    </section>
+
+    <footer class="snack-dock">
+      <div class="dock-intro"><span class="dock-kicker">PACK YOUR PICNIC</span><b>Pick a snack</b><small>Tap a snack, then tap a friend</small></div>
+      <div class="snack-options" id="snack-options" role="group" aria-label="Choose a snack"></div>
+      <div class="dock-controls"><div class="throw-counter"><span class="throw-star">✦</span><span id="throw-count">0</span><small>THROWS</small></div><button class="mission-button" id="mission-button" type="button"><span>▤</span> Mission <span class="mission-dot"></span></button></div>
+    </footer>
+    <div class="mobile-hint">Tap a snack, then tap the animal who wants it.</div>
+  </main>
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+  <div class="modal-backdrop" id="modal-backdrop" hidden>
+    <section class="modal-card" role="dialog" aria-modal="true" aria-labelledby="modal-title">
+      <button class="modal-close" id="modal-close" aria-label="Close">×</button>
+      <span class="modal-flower">✿</span>
+      <p class="panel-kicker">A LITTLE FIELD GUIDE</p>
+      <h2 id="modal-title">Your meadow mission</h2>
+      <p>Make <b>5 happy deliveries</b> to the right friends. Each animal has a favorite snack—check the little thought bubble above them or the field notes.</p>
+      <div class="guide-row"><span>🍓</span><span><b>Pick a snack</b><small>Select one from your picnic basket.</small></span></div>
+      <div class="guide-row"><span>🎯</span><span><b>Make the toss</b><small>Tap a friend or drag toward them and release.</small></span></div>
+      <div class="guide-row"><span>💛</span><span><b>Make a friend</b><small>Right snack, right friend = coins, hearts & happy dances.</small></span></div>
+      <button class="primary-button" id="got-it" type="button">Let's feed some friends <span>→</span></button>
+    </section>
+  </div>
+  <script src="game.js"></script>
+</body>
+</html>
