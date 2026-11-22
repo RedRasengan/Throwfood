@@ -4,81 +4,156 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <meta name="theme-color" content="#f6f1e4">
-  <title>Snack Safari — Feed the friendliest wilds</title>
+  <title>Snack Safari — Tame the meadow, grow your crew</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%F0%9F%8D%93%3C/text%3E%3C/svg%3E">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&family=Fredoka:wght@500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-  <main class="game-shell">
+  <main class="app-shell">
     <header class="topbar">
       <a class="brand" href="#" aria-label="Snack Safari home">
         <span class="brand-mark" aria-hidden="true">✿</span>
         <span>snack<span class="brand-bold">safari</span><small>WILD FRIENDS CLUB</small></span>
       </a>
-      <div class="top-stats">
-        <div class="stat-pill coins"><span class="stat-icon">✦</span><span id="coin-count">120</span><small>COINS</small></div>
-        <div class="stat-pill level"><span class="stat-icon">✿</span><span id="level-count">01</span><small>RANK</small></div>
+
+      <div class="hud-stats" aria-label="Game stats">
+        <div class="stat-pill coins"><span class="stat-icon">🪙</span><span id="coin-count">120</span><small>COINS</small></div>
+        <div class="stat-pill tips"><span class="stat-icon">💛</span><span id="income-count">0</span><small>TIPS / 3S</small></div>
+        <div class="stat-pill rank"><span class="stat-icon">🏅</span><span id="rank-count">1</span><small>RANK</small></div>
       </div>
-      <button class="sound-button" id="sound-toggle" type="button" aria-label="Toggle sound">♫ <span>Sound on</span></button>
+
+      <div class="top-actions">
+        <button class="icon-button" id="guide-button" type="button" aria-label="Open animal collection">🐾 <span>Collection</span></button>
+        <button class="shop-button" id="shop-button" type="button">🛍 <span>Camp shop</span></button>
+        <button class="sound-button" id="sound-toggle" type="button" aria-label="Toggle sound" aria-pressed="true">♫</button>
+      </div>
     </header>
 
     <section class="game-layout" aria-label="Snack Safari game">
-      <section class="play-area">
-        <div class="scene-heading">
-          <div class="location-tag"><span class="location-dot"></span> SUNNY MEADOW <span class="tag-divider">/</span> ZONE 01</div>
-          <h1>Snack time,<br><em>adventurer!</em></h1>
-          <p>Make a little friend’s day.</p>
+      <section class="world-card">
+        <canvas id="game-canvas" aria-label="Sunny Meadow. Move with WASD or arrow keys. Choose a snack, then click or tap a wild animal to throw it."></canvas>
+
+        <div class="location-chip"><span class="location-dot"></span> SUNNY MEADOW <small>WILD PASTURE</small></div>
+
+        <div class="quest-card">
+          <span class="quest-kicker">✦ TODAY'S TRAIL</span>
+          <b id="quest-text">Tame 3 meadow friends</b>
+          <div class="quest-track"><span id="quest-progress"></span></div>
+          <small id="quest-reward">Reward +60 coins</small>
         </div>
-        <div class="day-card"><span class="sun-icon">☀</span><span>DAY 1</span><small>GOLDEN HOUR</small></div>
-        <canvas id="game-canvas" aria-label="Sunny Meadow game scene. Aim at an animal and release to toss food."></canvas>
-        <div class="scene-tip" id="scene-tip"><span>✦</span><span>Choose a snack, then toss it to the friend who wants it!</span></div>
-        <div class="floating-feedback" id="feedback" aria-live="polite"></div>
-        <div class="combo-badge" id="combo-badge">✦ <span id="combo-count">2</span> STREAK</div>
-        <div class="aim-hint" id="aim-hint"><span class="aim-dot"></span> TAP A FRIEND TO TOSS</div>
-        <div class="canvas-vignette" aria-hidden="true"></div>
+
+        <div class="interaction-prompt" id="interaction-prompt" hidden><kbd>E</kbd><span>Open camp shop</span></div>
+
+        <div class="throw-tip" id="throw-tip"><span>WASD / arrows</span> to explore · <span>click</span> to throw</div>
+        <div class="feedback" id="feedback" aria-live="polite"></div>
+        <div class="aim-hint" id="aim-hint"><span class="aim-dot"></span> Choose a snack · toss it to a hungry friend</div>
+
+        <div class="scene-legend">
+          <span>🐾 <b id="wild-count">7</b> wild friends</span>
+          <span class="legend-dot">·</span>
+          <span>💛 <b id="crew-count">0</b> in your crew</span>
+        </div>
+
+        <div class="joystick" id="joystick" aria-label="Movement joystick">
+          <div class="joystick-ring"></div>
+          <div class="joystick-knob" id="joystick-knob"></div>
+        </div>
+        <button class="toss-button" id="toss-button" type="button">Throw <span>➜</span></button>
       </section>
 
       <aside class="side-panel">
-        <div class="panel-kicker">YOUR FIELD NOTES <span>✦</span></div>
-        <h2>Who's hungry?</h2>
-        <p class="panel-copy">Listen for their favorite snack.</p>
-        <div class="request-list" id="request-list"></div>
-        <div class="field-progress">
-          <div class="progress-label"><span>MEADOW MISSION</span><span id="mission-count">0 / 5</span></div>
-          <div class="progress-track"><span id="mission-progress"></span></div>
-          <p>Make 5 happy deliveries to earn a <b>bonus!</b></p>
+        <div class="panel-top"><span class="panel-kicker">YOUR CREW</span><span class="crew-badge" id="crew-badge">0</span></div>
+        <h2>Friends follow you.</h2>
+        <p class="panel-copy">Tamed animals trail behind you and leave a little tip every 3 seconds.</p>
+
+        <div class="income-card">
+          <span class="income-icon">💛</span>
+          <span><b id="income-rate">0 coins</b><small>every 3 seconds</small></span>
+          <span class="income-spark">✦</span>
         </div>
-        <div class="journal-card">
-          <span class="journal-icon">📖</span>
-          <span><b>Field journal</b><small id="journal-copy">Meet all 3 meadow friends!</small></span>
-          <span class="journal-arrow">›</span>
+
+        <div class="rank-card">
+          <div class="rank-line"><span>Rank <b id="rank-copy">1</b></span><span id="xp-copy">0 / 100 XP</span></div>
+          <div class="xp-track"><span id="xp-progress"></span></div>
         </div>
+
+        <div class="crew-list" id="crew-list"></div>
+
+        <div class="next-upgrade" id="next-upgrade"></div>
+        <button class="wide-button" id="side-shop" type="button">Upgrade camp <span>→</span></button>
+        <button class="text-button" id="side-guide" type="button">Open field guide</button>
       </aside>
     </section>
 
-    <footer class="snack-dock">
+    <footer class="bottom-dock">
       <div class="dock-intro"><span class="dock-kicker">PACK YOUR PICNIC</span><b>Pick a snack</b><small>Tap a snack, then tap a friend</small></div>
       <div class="snack-options" id="snack-options" role="group" aria-label="Choose a snack"></div>
-      <div class="dock-controls"><div class="throw-counter"><span class="throw-star">✦</span><span id="throw-count">0</span><small>THROWS</small></div><button class="mission-button" id="mission-button" type="button"><span>▤</span> Mission <span class="mission-dot"></span></button></div>
+      <div class="dock-controls">
+        <div class="throw-counter"><span class="throw-star">✦</span><span id="throw-count">0</span><small>THROWS</small></div>
+        <button class="mission-button" id="mission-button" type="button"><span>▤</span> How to play</button>
+      </div>
     </footer>
-    <div class="mobile-hint">Tap a snack, then tap the animal who wants it.</div>
   </main>
+
   <div class="toast" id="toast" role="status" aria-live="polite"></div>
-  <div class="modal-backdrop" id="modal-backdrop" hidden>
-    <section class="modal-card" role="dialog" aria-modal="true" aria-labelledby="modal-title">
-      <button class="modal-close" id="modal-close" aria-label="Close">×</button>
-      <span class="modal-flower">✿</span>
-      <p class="panel-kicker">A LITTLE FIELD GUIDE</p>
-      <h2 id="modal-title">Your meadow mission</h2>
-      <p>Make <b>5 happy deliveries</b> to the right friends. Each animal has a favorite snack—check the little thought bubble above them or the field notes.</p>
-      <div class="guide-row"><span>🍓</span><span><b>Pick a snack</b><small>Select one from your picnic basket.</small></span></div>
-      <div class="guide-row"><span>🎯</span><span><b>Make the toss</b><small>Tap a friend or drag toward them and release.</small></span></div>
-      <div class="guide-row"><span>💛</span><span><b>Make a friend</b><small>Right snack, right friend = coins, hearts & happy dances.</small></span></div>
-      <button class="primary-button" id="got-it" type="button">Let's feed some friends <span>→</span></button>
+
+  <div class="modal-backdrop" id="shop-modal" hidden>
+    <section class="modal-card shop-card" role="dialog" aria-modal="true" aria-labelledby="shop-title">
+      <button class="modal-close" id="shop-close" type="button" aria-label="Close shop">×</button>
+      <div class="modal-heading">
+        <span class="modal-flower">🛍</span>
+        <div>
+          <p class="panel-kicker">CAMP STORE</p>
+          <h2 id="shop-title">Upgrade your safari</h2>
+          <p>Better gear means faster taming and bigger tips from your crew.</p>
+        </div>
+        <div class="modal-wallet"><span>🪙</span><b id="shop-coins">120</b></div>
+      </div>
+      <div class="shop-grid" id="shop-grid"></div>
+      <div class="shop-footer"><span>💡</span> Tips arrive automatically. Tame more friends to grow your income.</div>
     </section>
   </div>
+
+  <div class="modal-backdrop" id="guide-modal" hidden>
+    <section class="modal-card guide-card" role="dialog" aria-modal="true" aria-labelledby="guide-title">
+      <button class="modal-close" id="guide-close" type="button" aria-label="Close field guide">×</button>
+      <div class="modal-heading">
+        <span class="modal-flower">📖</span>
+        <div>
+          <p class="panel-kicker">YOUR FIELD GUIDE</p>
+          <h2 id="guide-title">Meadow collection</h2>
+          <p>Every friend you tame is added to your crew and your field guide.</p>
+        </div>
+        <div class="guide-total"><b id="guide-total">0</b><small>ANIMALS TAMED</small></div>
+      </div>
+      <div class="guide-grid" id="guide-grid"></div>
+      <div class="controls-card">
+        <div><span class="key-group"><kbd>W</kbd><kbd>A</kbd><kbd>S</kbd><kbd>D</kbd></span><b>Move around</b><small>Arrow keys work too.</small></div>
+        <div><span class="key-group"><kbd>1</kbd><kbd>2</kbd><kbd>3</kbd><kbd>4</kbd></span><b>Pick a snack</b><small>Match the thought bubble.</small></div>
+        <div><span class="key-group"><kbd>CLICK</kbd></span><b>Throw food</b><small>Or press Space to toss.</small></div>
+        <div><span class="key-group"><kbd>E</kbd></span><b>Open camp shop</b><small>Stand near the tent.</small></div>
+      </div>
+    </section>
+  </div>
+
+  <div class="modal-backdrop" id="help-modal" hidden>
+    <section class="modal-card help-card" role="dialog" aria-modal="true" aria-labelledby="help-title">
+      <button class="modal-close" id="help-close" type="button" aria-label="Close help">×</button>
+      <span class="modal-flower">✿</span>
+      <p class="panel-kicker">A LITTLE FIELD GUIDE</p>
+      <h2 id="help-title">How to grow your safari</h2>
+      <p>Wild friends wander the meadow with a favorite snack in their thought bubble. Throw the matching treat to tame them.</p>
+      <div class="guide-row"><span>🚶</span><span><b>Explore the meadow</b><small>Use WASD, arrow keys, or the joystick on touch screens.</small></span></div>
+      <div class="guide-row"><span>🍓</span><span><b>Match the snack</b><small>Pick from your picnic dock, then click or tap a friend to toss.</small></span></div>
+      <div class="guide-row"><span>💛</span><span><b>Grow your crew</b><small>Tamed animals follow you and leave tips every few seconds.</small></span></div>
+      <div class="guide-row"><span>🛍</span><span><b>Upgrade camp</b><small>Spend coins on speed, throw range, bigger tips, and lucky bonuses.</small></span></div>
+      <button class="primary-button" id="help-start" type="button">Let's tame some friends <span>→</span></button>
+    </section>
+  </div>
+
   <script src="game.js"></script>
 </body>
 </html>
